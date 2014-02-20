@@ -66,24 +66,19 @@ class Person
   end
 
   def check_point
-    a_count = 0
     point = 0
     @hand.each do |card|
       if card.value.to_i > 0
         point += card.value.to_i
       elsif card.value == "A"
-        point += 1
-        a_count += 1
+        point += 11
       else
         point += 10
       end
     end
 
-    a_count.times do
-      if point + 10 > 21
-        break
-      end
-      point += 10
+    @hand.select{|card| card.value == "A"}.count.times do
+      point -= 10 if point > 21
     end
 
     point
@@ -164,7 +159,8 @@ class BlackJack
     @players_num = gets.chomp.to_i
 
     @players_num.times do |num|
-      puts "What's player" + num.to_s + "'s name?"
+      player_num = num + 1
+      puts "What's player" + player_num.to_s + "'s name?"
       name = gets.chomp
       player = Player.new(name)
       @players << player
