@@ -26,7 +26,7 @@ class Deck
     @deck.shuffle!
   end
 
-  def draw_card
+  def deal_card
     @deck.pop
   end
 
@@ -51,7 +51,10 @@ class Person
     @hand << card
   end
 
-  def turn
+  def start_turn(deck)
+    @hand.clear
+    self.pick_card(deck.deal_card)
+    self.pick_card(deck.deal_card)
   end
 
   def print_hand
@@ -89,48 +92,48 @@ end
 
 class Dealer < Person
   def turn(deck)
-    self.pick_card(deck.draw_card)
-    self.pick_card(deck.draw_card)
+    self.start_turn(deck)
     while true
       puts "Dealer's cards is " + self.print_hand + " now. Dealer's point is " + self.check_point.to_s
       if self.check_point > 21
-        puts "oops!"
+        puts "OH! Maybe it's a good news. Dealer is BUSTED!"
         break
       elsif self.check_point == 21
-        puts "Great! Blackjack!"
+        puts "Oops, Dealer gets BLACKJACK! ;)"
         break
       elsif self.check_point >= 17
-        puts "Dealer's turn is over!"
+        puts "Dealer's turn is over."
         break
       end
-      self.pick_card(deck.draw_card)
+      new_card = deck.deal_card
+      self.pick_card(new_card)
     end
   end
 end
 
 class Player < Person
   def turn(deck)
-    self.pick_card(deck.draw_card)
-    self.pick_card(deck.draw_card)
+    self.start_turn(deck)
     while true
       puts @name + ", you have " + self.print_hand + " now. Your point is " + self.check_point.to_s
       if self.check_point > 21
-        puts "oops!"
+        puts "Oops! Sorry, you BUSTED! ;("
         break
       elsif self.check_point == 21
-        puts "Great! Blackjack!"
+        puts "Great! Blackjack! :)"
         break
       end
       puts "Now you want: 1)Hit or 2)Stay ?"
       command = gets.chomp.to_i
 
       if command == 1
-        self.pick_card(deck.draw_card)
+        new_card = deck.deal_card
+        self.pick_card(new_card)
       else
-        puts "OK..."
         break
       end
     end
+    puts "Now wait for other players and dealer..."
   end
 end
 
@@ -140,7 +143,20 @@ class BlackJack
   def initialize
     @players = []
     @dealer = Dealer.new("Dealer")
+  end
+
+  def prepare_deck
     @deck = Deck.new(3)
+  end
+
+  def result_declare(player, result)
+    if result == "win"
+      puts "Congratulation! " + player.name + "! You win!!!"
+    elsif result == "lose"
+      puts "Oh! Sorry, " + player.name + ". You lose ;("
+    else
+      puts "It's a tie, " + player.name + ". :)"
+    end
   end
 
   def run
@@ -154,33 +170,43 @@ class BlackJack
       @players << player
     end
 
-    @players.each do |player|
-      player.turn(@deck)
-    end
+    while true
 
-    puts "Now it is dealer's turn:"
-    @dealer.turn(@deck)
+      self.prepare_deck
 
-    @players.each do |player|
-      if player.check_point == 21
-        puts "Congratulation! " + player.name + "! You win!!!"
-      elsif player.check_point > 21
-        puts "Oh! Sorry, " + player.name + ". You lose ;("
-      elsif @dealer.check_point == 21
-        puts "Oh! Sorry, " + player.name + ". You lose ;("
-      elsif @dealer.check_point > 21
-        puts "Congratulation! " + player.name + "! You win!!!"
-      elsif @dealer.check_point > player.check_point
-        puts "Oh! Sorry, " + player.name + ". You lose ;("
-      elsif @dealer.check_point < player.check_point
-        puts "Congratulation! " + player.name + "! You win!!!"
-      else
-        puts "It's a tie, " + player.name + ". :)"
+      @players.each do |player|
+        player.turn(@deck)
+      end
+
+      puts "Now it is dealer's turn:"
+      @dealer.turn(@deck)
+
+      @players.each do |player|
+        if player.check_point == 21
+          self.result_declare(player, "win")
+        elsif player.check_point > 21
+          self.result_declare(player, "lose")
+        elsif @dealer.check_point == 21
+          self.result_declare(player, "lose")
+        elsif @dealer.check_point > 21
+          self.result_declare(player, "win")
+        elsif @dealer.check_point > player.check_point
+          self.result_declare(player, "lose")
+        elsif @dealer.check_point < player.check_point
+          self.result_declare(player, "win")
+        else
+          self.result_declare(player, "tie")
+        end
+      end
+      puts "Nice play! Do you want to play one more time? 1)Yes 2)No"
+      command = gets.chomp.to_i
+
+      if command == 2
+        puts "Have a nice day, good bye:)"
+        break
       end
     end
-    puts "Nice play! Have a good time!"
   end
 end
-
 
 BlackJack.new.run
