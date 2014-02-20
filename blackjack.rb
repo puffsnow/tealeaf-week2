@@ -1,3 +1,6 @@
+#This is Card class, it has two attribute: 'suit' and 'value'.
+#Method--
+#to_s: return a string to represent this card. ex. Diamond 5 it will return "D5"
 class Card
   attr_reader :suit, :value
   def initialize(suit, value)
@@ -10,6 +13,10 @@ class Card
   end
 end
 
+#This is Deck class, it has one attribute: 'deck', 'deck' is an cards array. In initialize, it create a new deck then shuffle.
+#decks_num means how many decks(52 cards) you want to join to make a new deck.
+#Method--
+#deal_card: pop a card from deck, then return this card.
 class Deck
   def initialize(decks_num)
     @deck = []
@@ -39,6 +46,12 @@ class Deck
   end
 end
 
+#This is Person class, describe the common behavior with Player and Dealer, it has two attribute: 'hand' and 'name'
+#Method--
+#pick_card: pick the card to hand.
+#start_turn: initialize hand when the turn begin, it should clear hand first, then pick 2 card to start the game.
+#print_hand: return the string with cards in hand
+#check_point: calculate the total in hand, it will find the possible max total but not to be busted.
 class Person
   attr_reader :name
   attr_accessor :hand
@@ -85,6 +98,7 @@ class Person
   end
 end
 
+#This is Dealer class, inherited from Person. It has it's own turn method.
 class Dealer < Person
   def turn(deck)
     self.start_turn(deck)
@@ -106,6 +120,7 @@ class Dealer < Person
   end
 end
 
+#This is Player class, inherited from Person. It has it's own turn method.
 class Player < Person
   def turn(deck)
     self.start_turn(deck)
@@ -132,6 +147,9 @@ class Player < Person
   end
 end
 
+#This is Blackjack class, describe the process with the whole game. 
+#It has 2 attribute: 'players' is an array store the players.
+#'dealer' is the dealer object.
 class BlackJack
   attr_accessor :deck
 
