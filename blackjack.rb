@@ -9,7 +9,13 @@ class Card
   end
 
   def to_s
-    @suit + @value
+    suit_str = case suit
+                when "C" then "Club"
+                when "D" then "Diamond"
+                when "H" then "Heart"
+                when "S" then "Spade"
+               end
+    suit_str + value
   end
 end
 
@@ -22,14 +28,13 @@ class Deck
     @deck = []
     suits = ["C", "D", "H", "S"]
     values = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
-    decks_num.times do 
-      suits.each do |suit|
-        values.each do |value|
-          card = Card.new(suit, value)
-          @deck << card
-        end
+    suits.each do |suit|
+      values.each do |value|
+        card = Card.new(suit, value)
+        @deck << card
       end
     end
+    @deck = @deck * decks_num
     @deck.shuffle!
   end
 
@@ -61,18 +66,18 @@ class Person
   end
 
   def pick_card(card)
-    @hand << card
+    hand << card
   end
 
   def start_turn(deck)
-    @hand.clear
+    hand.clear
     self.pick_card(deck.deal_card)
     self.pick_card(deck.deal_card)
   end
 
   def print_hand
     cards_str = []
-    @hand.each do |card|
+    hand.each do |card|
       cards_str << card.to_s
     end
     cards_str.join(", ")
@@ -80,7 +85,7 @@ class Person
 
   def check_point
     point = 0
-    @hand.each do |card|
+    hand.each do |card|
       if card.value.to_i > 0
         point += card.value.to_i
       elsif card.value == "A"
@@ -90,7 +95,7 @@ class Person
       end
     end
 
-    @hand.select{|card| card.value == "A"}.count.times do
+    hand.select{|card| card.value == "A"}.count.times do
       point -= 10 if point > 21
     end
 

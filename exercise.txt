@@ -1,0 +1,49 @@
+1. (1)a = 1  
+      Ans. a is a local variable, and is a Fixnum object with value 1 
+   (2)@a = 2
+      Ans. a is an instance variable, and is a Fixnum object with value 2
+   (3)user = User.new
+      Ans. user is an instance object of User class.
+   (4)user.name
+      Ans. return instance variable "name" in "user" object.
+   (5)user.name = "Joe"
+      Ans. set instance variable "name" in "user" object to "Joe"
+
+2. How does a class mixin a module?
+  Ans. use "include" in the class when you want to mixin a module, ex.
+  class Classname
+    include Modulname
+
+    ...
+    ...
+  end
+
+3. What's the difference between class variables and instance variables?
+  Ans. class variable is used for every objcet from this class, every one read and edit a same variable. But instance variable is own by its object, every object has it's own instance variable.
+
+4. What does attr_accessor do?
+  Ans. It says the variable below this signal has read and write method for other objects.
+
+5. How would you describe this expression: Dog.some_method
+  Ans. It means calling a method named "some_method" in the "Dog" class
+
+6. In Ruby, what's the difference between subclassing and mixing in modules?
+  Ans.
+  #Subclassing is when the classes is a relationship and has a single inheritance. For example, a Dog subclass will inherit all of the behaviors of an Animal superclass.
+
+  #Mixing in modules is called composition and it is when classes has a relationship. This is usually when classes have multiple inheritances or when certain behaviors are shared among classes, but not every single one of them.
+
+7. Given that I can instantiate a user like this: User.new('Bob'), what would the initialize method look like for the User class?
+  Ans. It looks like below:
+  class User
+    def initialize(name)
+      ...
+      ...
+    end
+  end
+
+8. Can you call instance methods of the same class from other instance methods in that class?
+  Ans. Yes.
+
+9. When you get stuck, what's the process you use to try to trap the error?
+  Ans. Use 'pry'
